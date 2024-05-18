@@ -98,7 +98,11 @@ namespace Pogoda
         {
             if (int.TryParse(DayTextBox.Text, out int day) && int.TryParse(TemperatureTextBox.Text, out int temp))
             {
-                if (_originalWeatherData.Any(w => w.Day == day))
+                if (day < 1 || day > 31)
+                {
+                    MessageBox.Show($"День {day} не существует. Введите день от 1 до 31.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else if (_originalWeatherData.Any(w => w.Day == day))
                 {
                     MessageBox.Show($"День {day} уже существует. Введите другой день.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -109,6 +113,7 @@ namespace Pogoda
                 }
             }
         }
+
 
         private void SortWeatherData(object parameter)
         {
