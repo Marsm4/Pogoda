@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
@@ -19,6 +20,51 @@ namespace Pogoda
             {
                 _filteredWeatherData = value;
                 OnPropertyChanged("WeatherData");
+                UpdateStatistics();
+            }
+        }
+
+        private double _averageTemperature;
+        public double AverageTemperature
+        {
+            get { return _averageTemperature; }
+            set
+            {
+                _averageTemperature = value;
+                OnPropertyChanged("AverageTemperature");
+            }
+        }
+
+        private int _maxTemperature;
+        public int MaxTemperature
+        {
+            get { return _maxTemperature; }
+            set
+            {
+                _maxTemperature = value;
+                OnPropertyChanged("MaxTemperature");
+            }
+        }
+
+        private int _minTemperature;
+        public int MinTemperature
+        {
+            get { return _minTemperature; }
+            set
+            {
+                _minTemperature = value;
+                OnPropertyChanged("MinTemperature");
+            }
+        }
+
+        private string _temperatureAnomalies;
+        public string TemperatureAnomalies
+        {
+            get { return _temperatureAnomalies; }
+            set
+            {
+                _temperatureAnomalies = value;
+                OnPropertyChanged("TemperatureAnomalies");
             }
         }
 
@@ -95,6 +141,31 @@ namespace Pogoda
                     WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData.Where(w => w.Temperature == 0));
                     break;
             }
+        }
+
+        private void UpdateStatistics()
+        {
+            if (_filteredWeatherData.Count > 0)
+            {
+                AverageTemperature = _filteredWeatherData.Average(w => w.Temperature);
+                MaxTemperature = _filteredWeatherData.Max(w => w.Temperature);
+                MinTemperature = _filteredWeatherData.Min(w => w.Temperature);
+                TemperatureAnomalies = GetTemperatureAnomalies();
+            }
+        }
+
+        private string GetTemperatureAnomalies()
+        {
+            var anomalies = new StringBuilder();
+            for (int i = 1; i < _filteredWeatherData.Count; i++)
+            {
+                var tempDifference = Math.Abs(_filteredWeatherData[i].Temperature - _filteredWeatherData[i - 1].Temperature);
+                if (tempDifference >= 10)
+                {
+                    anomalies.AppendLine($"Day {_filteredWeatherData[i].Day}: {tempDifference} degrees");
+                }
+            }
+            return anomalies.ToString();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
