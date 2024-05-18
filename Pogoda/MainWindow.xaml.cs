@@ -28,7 +28,7 @@ namespace Pogoda
         private double _averageTemperature;
         public double AverageTemperature
         {
-            get { return _averageTemperature; }
+            get { return Math.Round(_averageTemperature, 2); } // Округление до десятых
             set
             {
                 _averageTemperature = value;
