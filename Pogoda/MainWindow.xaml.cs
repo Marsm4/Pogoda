@@ -84,7 +84,10 @@ namespace Pogoda
                 new WeatherInfo { Day = 1, Temperature = 1 },
                 new WeatherInfo { Day = 2, Temperature = 5 },
                 new WeatherInfo { Day = 3, Temperature = 4 },
-                new WeatherInfo { Day = 4, Temperature = -15 }
+                new WeatherInfo { Day = 4, Temperature = 0 },
+                new WeatherInfo { Day = 5, Temperature = 15 },
+                new WeatherInfo { Day = 6, Temperature = 13 },
+                new WeatherInfo { Day = 7, Temperature = -15 }
             };
 
             WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData);
