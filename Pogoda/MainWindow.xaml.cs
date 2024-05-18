@@ -68,6 +68,17 @@ namespace Pogoda
             }
         }
 
+        private string _temperatureRepetitions;
+        public string TemperatureRepetitions
+        {
+            get { return _temperatureRepetitions; }
+            set
+            {
+                _temperatureRepetitions = value;
+                OnPropertyChanged("TemperatureRepetitions");
+            }
+        }
+
         public ICommand AddCommand { get; }
         public ICommand SortCommand { get; }
         public ICommand FilterCommand { get; }
@@ -85,9 +96,9 @@ namespace Pogoda
                 new WeatherInfo { Day = 2, Temperature = 5 },
                 new WeatherInfo { Day = 3, Temperature = 4 },
                 new WeatherInfo { Day = 4, Temperature = 0 },
-                new WeatherInfo { Day = 5, Temperature = 15 },
+                new WeatherInfo { Day = 5, Temperature = 5 },
                 new WeatherInfo { Day = 6, Temperature = 13 },
-                new WeatherInfo { Day = 7, Temperature = -15 }
+                new WeatherInfo { Day = 7, Temperature = 5 }
             };
 
             WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData);
@@ -166,6 +177,7 @@ namespace Pogoda
                 MaxTemperature = _filteredWeatherData.Max(w => w.Temperature);
                 MinTemperature = _filteredWeatherData.Min(w => w.Temperature);
                 TemperatureAnomalies = GetTemperatureAnomalies();
+                TemperatureRepetitions = GetTemperatureRepetitions();
             }
         }
 
@@ -193,6 +205,26 @@ namespace Pogoda
 
             anomalies.Append(anomaliesDrop).Append("\n").Append(anomaliesRise);
             return anomalies.ToString();
+        }
+
+        private string GetTemperatureRepetitions()
+        {
+            var repetitions = new StringBuilder();
+            var temperatureCounts = _filteredWeatherData.GroupBy(w => w.Temperature)
+                .Where(group => group.Count() > 1) // Фильтр для вывода только тех температур, которые встречаются более одного раза
+                .Select(group => new
+                {
+                Temperature = group.Key,
+                Count = group.Count(),
+                Days = string.Join(",", group.Select(g => g.Day))
+                });
+
+            foreach (var tempCount in temperatureCounts)
+            {
+                repetitions.AppendLine($"Температура {tempCount.Temperature} была {tempCount.Count} раз(а) : {tempCount.Days}");
+            }
+
+            return repetitions.ToString();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -229,3 +261,4 @@ namespace Pogoda
         }
     }
 }
+

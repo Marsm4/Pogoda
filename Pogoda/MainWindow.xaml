@@ -21,7 +21,7 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<!-- List of Weather Information -->
+	
 		<ListView x:Name="WeatherListView" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding WeatherData}">
 			<ListView.View>
 				<GridView>
@@ -31,24 +31,27 @@
 			</ListView.View>
 		</ListView>
 
+		<ScrollViewer Grid.Column="0" Grid.Row="1" Margin="10"><!--прокрутка-->
+			<StackPanel>
+				<TextBlock Text="Средняя температура: " FontWeight="Bold"/>
+				<TextBlock Text="{Binding AverageTemperature}" Grid.Column="1"/>
+
+				<TextBlock Text="Максимальная температура: " FontWeight="Bold" Margin="10,0,0,0" Grid.Column="2" />
+				<TextBlock Text="{Binding MaxTemperature}" Grid.Column="3" Margin="10,0,0,0" />
+
+				<TextBlock Text="Минимальная температура: " FontWeight="Bold" Margin="10,0,0,0" Grid.Column="0" />
+				<TextBlock Text="{Binding MinTemperature}" Grid.Column="1" Margin="10,0,0,0" />
+
+				<TextBlock Text="Аномальные изменения температуры: " FontWeight="Bold" Margin="10,0,0,0" Grid.Column="2" />
+				<TextBlock Text="{Binding TemperatureAnomalies}" Grid.Column="3" Margin="10,0,0,0" />
+
+				<TextBlock Text="Повторения температуры: " FontWeight="Bold" Margin="10,0,0,0" Grid.Column="2" />
+				<TextBlock Text="{Binding TemperatureRepetitions}" Grid.Column="3" Margin="10,0,0,0" />
+			</StackPanel>
+		</ScrollViewer>
+
+
 		
-
-		<!-- Weather Statistics -->
-		<StackPanel Grid.Column="0" Grid.Row="1" Margin="10">
-			<TextBlock Text="Средняя температура: " FontWeight="Bold"/>
-			<TextBlock Text="{Binding AverageTemperature}" Grid.Column="1"/>
-
-			<TextBlock Text="Максимальная температура: " FontWeight="Bold" Margin="10,0,0,0" Grid.Column="2" />
-			<TextBlock Text="{Binding MaxTemperature}" Grid.Column="3" Margin="10,0,0,0" />
-
-			<TextBlock Text="Минимальная температура: " FontWeight="Bold" Margin="10,0,0,0" Grid.Column="0" />
-			<TextBlock Text="{Binding MinTemperature}" Grid.Column="1" Margin="10,0,0,0" />
-
-			<TextBlock Text="Аномальные изменения температуры: " FontWeight="Bold" Margin="10,0,0,0" Grid.Column="2" />
-			<TextBlock Text="{Binding TemperatureAnomalies}" Grid.Column="3" Margin="10,0,0,0" />
-		</StackPanel>
-
-		<!-- Controls for adding new weather info and sorting/filtering -->
 		<StackPanel Grid.Column="1" Margin="10">
 			<TextBlock Text="Add Weather Info" FontWeight="Bold" Margin="0,0,0,10"/>
 			<StackPanel Orientation="Horizontal">
