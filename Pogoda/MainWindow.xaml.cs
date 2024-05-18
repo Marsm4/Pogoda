@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.IO;
 
 namespace Pogoda
 {
@@ -98,7 +99,9 @@ namespace Pogoda
                 new WeatherInfo { Day = 4, Temperature = 0 },
                 new WeatherInfo { Day = 5, Temperature = 5 },
                 new WeatherInfo { Day = 6, Temperature = 13 },
-                new WeatherInfo { Day = 7, Temperature = 5 }
+                new WeatherInfo { Day = 7, Temperature =  -7 },
+                 new WeatherInfo { Day = 8, Temperature =  -20 },
+                new WeatherInfo { Day = 9, Temperature = 19 }
             };
 
             WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData);

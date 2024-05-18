@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pogoda"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="550" Width="800">
 	<Window.Resources>
 		<Style TargetType="TextBox" x:Key="PlaceholderTextBoxStyle">
 			<Setter Property="local:PlaceholderBehavior.Placeholder" Value="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" />
@@ -53,21 +53,22 @@
 
 		
 		<StackPanel Grid.Column="1" Margin="10">
-			<TextBlock Text="Add Weather Info" FontWeight="Bold" Margin="0,0,0,10"/>
+			<TextBlock Text="Добавить информацию о погоде" FontWeight="Bold" Margin="0,0,0,10"/>
 			<StackPanel Orientation="Horizontal">
-				<TextBox x:Name="DayTextBox" Width="50" Margin="0,0,10,0" Tag="Day" Style="{StaticResource PlaceholderTextBoxStyle}"/>
-				<TextBox x:Name="TemperatureTextBox" Width="100" Margin="0,0,10,0" Tag="Temperature" Style="{StaticResource PlaceholderTextBoxStyle}"/>
-				<Button Content="Add" Command="{Binding AddCommand}" />
+				<TextBox x:Name="DayTextBox" Width="50" Margin="0,0,10,0" Tag="День" Style="{StaticResource PlaceholderTextBoxStyle}"/>
+				<TextBox x:Name="TemperatureTextBox" Width="100" Margin="0,0,10,0" Tag="Температура" Style="{StaticResource PlaceholderTextBoxStyle}"/>
+				<Button Content="Добавить" Command="{Binding AddCommand}" />
+				<Button Content="Сохранить в файл" Command="{Binding SaveCommand}" />
 			</StackPanel>
 
-			<TextBlock Text="Sort and Filter" FontWeight="Bold" Margin="0,20,0,10"/>
+			<TextBlock Text="Сортировка и фильтрация" FontWeight="Bold" Margin="0,20,0,10"/>
 			<ComboBox x:Name="SortComboBox" Width="150" Margin="0,0,10,0"
                       ItemsSource="{Binding SortOptions}" SelectedIndex="0" />
-			<Button Content="Sort" Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=SortComboBox, Path=SelectedItem}" />
+			<Button Content="Сортировка" Command="{Binding SortCommand}" CommandParameter="{Binding ElementName=SortComboBox, Path=SelectedItem}" />
 
 			<ComboBox x:Name="FilterComboBox" Width="150" Margin="0,10,10,0"
                       ItemsSource="{Binding FilterOptions}" SelectedIndex="0" />
-			<Button Content="Filter" Command="{Binding FilterCommand}" CommandParameter="{Binding ElementName=FilterComboBox, Path=SelectedItem}" />
+			<Button Content="Фильтрация" Command="{Binding FilterCommand}" CommandParameter="{Binding ElementName=FilterComboBox, Path=SelectedItem}" />
 		</StackPanel>
 	</Grid>
 </Window>
