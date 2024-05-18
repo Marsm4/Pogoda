@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.IO;
+using System.Windows.Controls;
 
 namespace Pogoda
 {
@@ -13,6 +14,7 @@ namespace Pogoda
     {
         private ObservableCollection<WeatherInfo> _originalWeatherData;
         private ObservableCollection<WeatherInfo> _filteredWeatherData;
+
 
         public ObservableCollection<WeatherInfo> WeatherData
         {
@@ -79,12 +81,16 @@ namespace Pogoda
                 OnPropertyChanged("TemperatureRepetitions");
             }
         }
+        public ObservableCollection<string> WeatherTypes { get; } = new ObservableCollection<string>
+        {
+            "Ясный", "Дождливый", "Туманный", "Снежный"
+        };
 
         public ICommand AddCommand { get; }
         public ICommand SortCommand { get; }
         public ICommand FilterCommand { get; }
         public string[] SortOptions { get; } = { "по возрастанию дней (от 1 до 30)", "по убыванию дней (от большего к меньшему)", "по возрастанию температуры", "по убыванию температуры" };
-        public string[] FilterOptions { get; } = { "все", "положительная температура", "отрицательная температура", "нулевая температура" };
+        public string[] FilterOptions { get; } = { "все", "положительная температура", "отрицательная температура", "нулевая температура", "ясный", "дождливый", "туманный", "снежный" };
         public ICommand SaveCommand { get; }
         public MainWindow()
         {
@@ -93,15 +99,15 @@ namespace Pogoda
 
             _originalWeatherData = new ObservableCollection<WeatherInfo>
             {
-                new WeatherInfo { Day = 1, Temperature = 1 },
-                new WeatherInfo { Day = 2, Temperature = 5 },
-                new WeatherInfo { Day = 3, Temperature = 4 },
-                new WeatherInfo { Day = 4, Temperature = 0 },
-                new WeatherInfo { Day = 5, Temperature = 5 },
-                new WeatherInfo { Day = 6, Temperature = 13 },
-                new WeatherInfo { Day = 7, Temperature =  -7 },
-                 new WeatherInfo { Day = 8, Temperature =  -20 },
-                new WeatherInfo { Day = 9, Temperature = 19 }
+                new WeatherInfo { Day = 1, Temperature = 1, WeatherType = "Ясный" },
+                new WeatherInfo { Day = 2, Temperature = 5, WeatherType = "Дождливый" },
+                new WeatherInfo { Day = 3, Temperature = 4, WeatherType = "Туманный" },
+                new WeatherInfo { Day = 4, Temperature = 0, WeatherType = "Снежный" },
+                new WeatherInfo { Day = 5, Temperature = 5, WeatherType = "Ясный" },
+                new WeatherInfo { Day = 6, Temperature = 13, WeatherType = "Ясный" },
+                new WeatherInfo { Day = 7, Temperature = -7, WeatherType = "Снежный" },
+                new WeatherInfo { Day = 8, Temperature = -20, WeatherType = "Снежный" },
+                new WeatherInfo { Day = 9, Temperature = 19, WeatherType = "Ясный" }
             };
 
             WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData);
@@ -114,14 +120,12 @@ namespace Pogoda
         }
         private void SaveWeatherData(object parameter)
         {
-            // Проверяем, есть ли данные для сохранения
             if (WeatherData == null || WeatherData.Count == 0)
             {
                 MessageBox.Show("Нет данных для сохранения.", "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Запрашиваем у пользователя путь для сохранения файла
             var dialog = new Microsoft.Win32.SaveFileDialog
             {
                 Filter = "Текстовые файлы (*.txt)|*.txt",
@@ -133,12 +137,11 @@ namespace Pogoda
             {
                 try
                 {
-                    // Создаем или перезаписываем файл и записываем данные
                     using (StreamWriter writer = new StreamWriter(dialog.FileName))
                     {
                         foreach (var weatherInfo in WeatherData)
                         {
-                            writer.WriteLine($"День: {weatherInfo.Day}, Температура: {weatherInfo.Temperature}");
+                            writer.WriteLine($"День: {weatherInfo.Day}, Температура: {weatherInfo.Temperature}, Тип погоды: {weatherInfo.WeatherType}");
                         }
                     }
                     MessageBox.Show("Данные успешно сохранены.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -153,8 +156,9 @@ namespace Pogoda
 
         private void AddWeatherInfo(object parameter)
         {
-            if (int.TryParse(DayTextBox.Text, out int day) && int.TryParse(TemperatureTextBox.Text, out int temp))
+            if (int.TryParse(DayTextBox.Text, out int day) && int.TryParse(TemperatureTextBox.Text, out int temp) && WeatherTypeComboBox.SelectedItem != null)
             {
+                string weatherType = ((ComboBoxItem)WeatherTypeComboBox.SelectedItem).Content.ToString();
                 if (day < 1 || day > 31)
                 {
                     MessageBox.Show($"День {day} не существует. Введите день от 1 до 31.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -165,11 +169,12 @@ namespace Pogoda
                 }
                 else
                 {
-                    _originalWeatherData.Add(new WeatherInfo { Day = day, Temperature = temp });
+                    _originalWeatherData.Add(new WeatherInfo { Day = day, Temperature = temp, WeatherType = weatherType });
                     WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData);
                 }
             }
         }
+
 
 
         private void SortWeatherData(object parameter)
@@ -209,8 +214,15 @@ namespace Pogoda
                 case "нулевая температура":
                     WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData.Where(w => w.Temperature == 0));
                     break;
+                case "ясный":
+                case "дождливый":
+                case "туманный":
+                case "снежный":
+                    WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData.Where(w => w.WeatherType == filterOption));
+                    break;
             }
         }
+
 
         private void UpdateStatistics()
         {
@@ -254,12 +266,12 @@ namespace Pogoda
         {
             var repetitions = new StringBuilder();
             var temperatureCounts = _filteredWeatherData.GroupBy(w => w.Temperature)
-                .Where(group => group.Count() > 1) // Фильтр для вывода только тех температур, которые встречаются более одного раза
+                .Where(group => group.Count() > 1)
                 .Select(group => new
                 {
-                Temperature = group.Key,
-                Count = group.Count(),
-                Days = string.Join(",", group.Select(g => g.Day))
+                    Temperature = group.Key,
+                    Count = group.Count(),
+                    Days = string.Join(",", group.Select(g => g.Day))
                 });
 
             foreach (var tempCount in temperatureCounts)
@@ -282,7 +294,9 @@ namespace Pogoda
     {
         public int Day { get; set; }
         public int Temperature { get; set; }
+        public string WeatherType { get; set; } 
     }
+
 
     public class RelayCommand : ICommand
     {

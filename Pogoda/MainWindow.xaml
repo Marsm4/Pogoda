@@ -21,17 +21,17 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-	
 		<ListView x:Name="WeatherListView" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding WeatherData}">
 			<ListView.View>
 				<GridView>
 					<GridViewColumn Header="Day" DisplayMemberBinding="{Binding Day}" Width="50"/>
 					<GridViewColumn Header="Temperature" DisplayMemberBinding="{Binding Temperature}" Width="100"/>
+					<GridViewColumn Header="Weather Type" DisplayMemberBinding="{Binding WeatherType}" Width="150"/>
 				</GridView>
 			</ListView.View>
 		</ListView>
 
-		<ScrollViewer Grid.Column="0" Grid.Row="1" Margin="10"><!--прокрутка-->
+		<ScrollViewer Grid.Column="0" Grid.Row="1" Margin="10">
 			<StackPanel>
 				<TextBlock Text="Средняя температура: " FontWeight="Bold"/>
 				<TextBlock Text="{Binding AverageTemperature}" Grid.Column="1"/>
@@ -50,13 +50,17 @@
 			</StackPanel>
 		</ScrollViewer>
 
-
-		
 		<StackPanel Grid.Column="1" Margin="10">
 			<TextBlock Text="Добавить информацию о погоде" FontWeight="Bold" Margin="0,0,0,10"/>
 			<StackPanel Orientation="Horizontal">
 				<TextBox x:Name="DayTextBox" Width="50" Margin="0,0,10,0" Tag="День" Style="{StaticResource PlaceholderTextBoxStyle}"/>
 				<TextBox x:Name="TemperatureTextBox" Width="100" Margin="0,0,10,0" Tag="Температура" Style="{StaticResource PlaceholderTextBoxStyle}"/>
+				<ComboBox x:Name="WeatherTypeComboBox" Width="150" Margin="0,0,10,0" Tag="Тип погоды">
+					<ComboBoxItem>Ясный</ComboBoxItem>
+					<ComboBoxItem>Дождливый</ComboBoxItem>
+					<ComboBoxItem>Туманный</ComboBoxItem>
+					<ComboBoxItem>Снежный</ComboBoxItem>
+				</ComboBox>
 				<Button Content="Добавить" Command="{Binding AddCommand}" />
 				<Button Content="Сохранить в файл" Command="{Binding SaveCommand}" />
 			</StackPanel>
