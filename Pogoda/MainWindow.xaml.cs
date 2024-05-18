@@ -98,8 +98,15 @@ namespace Pogoda
         {
             if (int.TryParse(DayTextBox.Text, out int day) && int.TryParse(TemperatureTextBox.Text, out int temp))
             {
-                _originalWeatherData.Add(new WeatherInfo { Day = day, Temperature = temp });
-                WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData);
+                if (_originalWeatherData.Any(w => w.Day == day))
+                {
+                    MessageBox.Show($"День {day} уже существует. Введите другой день.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    _originalWeatherData.Add(new WeatherInfo { Day = day, Temperature = temp });
+                    WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData);
+                }
             }
         }
 
@@ -157,14 +164,26 @@ namespace Pogoda
         private string GetTemperatureAnomalies()
         {
             var anomalies = new StringBuilder();
+            var anomaliesDrop = new StringBuilder("Аномальные спад:\n");
+            var anomaliesRise = new StringBuilder("Аномальный подъем:\n");
+
             for (int i = 1; i < _filteredWeatherData.Count; i++)
             {
-                var tempDifference = Math.Abs(_filteredWeatherData[i].Temperature - _filteredWeatherData[i - 1].Temperature);
-                if (tempDifference >= 10)
+                var tempDifference = _filteredWeatherData[i].Temperature - _filteredWeatherData[i - 1].Temperature;
+                if (Math.Abs(tempDifference) >= 10)
                 {
-                    anomalies.AppendLine($"Day {_filteredWeatherData[i].Day}: {tempDifference} degrees");
+                    if (tempDifference > 0)
+                    {
+                        anomaliesRise.AppendLine($"День {_filteredWeatherData[i].Day}: +{tempDifference} градусов");
+                    }
+                    else
+                    {
+                        anomaliesDrop.AppendLine($"День {_filteredWeatherData[i].Day}: {tempDifference} градусов");
+                    }
                 }
             }
+
+            anomalies.Append(anomaliesDrop).Append("\n").Append(anomaliesRise);
             return anomalies.ToString();
         }
 
