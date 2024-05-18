@@ -85,7 +85,7 @@ namespace Pogoda
         public ICommand FilterCommand { get; }
         public string[] SortOptions { get; } = { "по возрастанию дней (от 1 до 30)", "по убыванию дней (от большего к меньшему)", "по возрастанию температуры", "по убыванию температуры" };
         public string[] FilterOptions { get; } = { "все", "положительная температура", "отрицательная температура", "нулевая температура" };
-
+        public ICommand SaveCommand { get; }
         public MainWindow()
         {
             InitializeComponent();
@@ -109,7 +109,47 @@ namespace Pogoda
             AddCommand = new RelayCommand(AddWeatherInfo);
             SortCommand = new RelayCommand(SortWeatherData);
             FilterCommand = new RelayCommand(FilterWeatherData);
+
+            SaveCommand = new RelayCommand(SaveWeatherData);
         }
+        private void SaveWeatherData(object parameter)
+        {
+            // Проверяем, есть ли данные для сохранения
+            if (WeatherData == null || WeatherData.Count == 0)
+            {
+                MessageBox.Show("Нет данных для сохранения.", "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // Запрашиваем у пользователя путь для сохранения файла
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "Текстовые файлы (*.txt)|*.txt",
+                DefaultExt = ".txt",
+                FileName = "weather_data"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    // Создаем или перезаписываем файл и записываем данные
+                    using (StreamWriter writer = new StreamWriter(dialog.FileName))
+                    {
+                        foreach (var weatherInfo in WeatherData)
+                        {
+                            writer.WriteLine($"День: {weatherInfo.Day}, Температура: {weatherInfo.Temperature}");
+                        }
+                    }
+                    MessageBox.Show("Данные успешно сохранены.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при сохранении файла: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
 
         private void AddWeatherInfo(object parameter)
         {
