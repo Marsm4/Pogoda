@@ -14,11 +14,11 @@
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="2*" />
+			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
 		<!-- List of Weather Information -->
@@ -31,22 +31,21 @@
 			</ListView.View>
 		</ListView>
 
-		<!-- Separator -->
-		<Separator Grid.Column="0" Grid.Row="1" Margin="10" />
+		
 
 		<!-- Weather Statistics -->
 		<StackPanel Grid.Column="0" Grid.Row="1" Margin="10">
 			<TextBlock Text="Средняя температура: " FontWeight="Bold"/>
-			<TextBlock Text="{Binding AverageTemperature}" Grid.Column="0"/>
+			<TextBlock Text="{Binding AverageTemperature}" Grid.Column="1"/>
 
-			<TextBlock Text="Максимальная температура: " FontWeight="Bold" Margin="10,0,0,0" />
-			<TextBlock Text="{Binding MaxTemperature}" Grid.Column="1" Margin="10,0,0,0" />
+			<TextBlock Text="Максимальная температура: " FontWeight="Bold" Margin="10,0,0,0" Grid.Column="2" />
+			<TextBlock Text="{Binding MaxTemperature}" Grid.Column="3" Margin="10,0,0,0" />
 
-			<TextBlock Text="Минимальная температура: " FontWeight="Bold" Margin="10,0,0,0" />
+			<TextBlock Text="Минимальная температура: " FontWeight="Bold" Margin="10,0,0,0" Grid.Column="0" />
 			<TextBlock Text="{Binding MinTemperature}" Grid.Column="1" Margin="10,0,0,0" />
 
-			<TextBlock Text="Аномальные изменения температуры: " FontWeight="Bold" Margin="10,0,0,0" />
-			<TextBlock Text="{Binding TemperatureAnomalies}" Grid.Column="1" Margin="10,0,0,0" />
+			<TextBlock Text="Аномальные изменения температуры: " FontWeight="Bold" Margin="10,0,0,0" Grid.Column="2" />
+			<TextBlock Text="{Binding TemperatureAnomalies}" Grid.Column="3" Margin="10,0,0,0" />
 		</StackPanel>
 
 		<!-- Controls for adding new weather info and sorting/filtering -->
