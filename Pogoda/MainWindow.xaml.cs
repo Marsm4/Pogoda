@@ -115,6 +115,8 @@ namespace Pogoda
                 ApplyFilters();
             }
         }
+        public ICommand DeleteCommand { get; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -140,6 +142,16 @@ namespace Pogoda
             FilterCommand = new RelayCommand(FilterWeatherData);
 
             SaveCommand = new RelayCommand(SaveWeatherData);
+            DeleteCommand = new RelayCommand(DeleteWeatherInfo);
+        }
+        private void DeleteWeatherInfo(object parameter)
+        {
+            if (WeatherListView.SelectedItem != null)
+            {
+                WeatherInfo selectedWeatherInfo = (WeatherInfo)WeatherListView.SelectedItem;
+                _originalWeatherData.Remove(selectedWeatherInfo);
+                WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData);
+            }
         }
         private void SaveWeatherData(object parameter)
         {

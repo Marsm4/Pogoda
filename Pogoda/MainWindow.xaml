@@ -29,7 +29,13 @@
 					<GridViewColumn Header="Weather Type" DisplayMemberBinding="{Binding WeatherType}" Width="150"/>
 				</GridView>
 			</ListView.View>
+			<ListView.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="Удалить" Command="{Binding DeleteCommand}" />
+				</ContextMenu>
+			</ListView.ContextMenu>
 		</ListView>
+
 
 		<ScrollViewer Grid.Column="0" Grid.Row="1" Margin="10">
 			<StackPanel>
