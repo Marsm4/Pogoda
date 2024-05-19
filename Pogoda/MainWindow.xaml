@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pogoda"
         mc:Ignorable="d"
-        Title="MainWindow" Height="550" Width="800">
+        Title="MainWindow" Height="850" Width="1200">
 	<Window.Resources>
 		<Style TargetType="TextBox" x:Key="PlaceholderTextBoxStyle">
 			<Setter Property="local:PlaceholderBehavior.Placeholder" Value="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" />

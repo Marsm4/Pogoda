@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.IO;
 using System.Windows.Controls;
+using System.Collections.Generic;
 
 namespace Pogoda
 {
@@ -92,6 +93,28 @@ namespace Pogoda
         public string[] SortOptions { get; } = { "по возрастанию дней (от 1 до 30)", "по убыванию дней (от большего к меньшему)", "по возрастанию температуры", "по убыванию температуры" };
         public string[] FilterOptions { get; } = { "все", "положительная температура", "отрицательная температура", "нулевая температура", "ясный", "дождливый", "туманный", "снежный" };
         public ICommand SaveCommand { get; }
+        private string _currentTemperatureFilter = "все";
+        private string _currentWeatherTypeFilter = "все";
+        public string CurrentTemperatureFilter
+        {
+            get { return _currentTemperatureFilter; }
+            set
+            {
+                _currentTemperatureFilter = value;
+                OnPropertyChanged("CurrentTemperatureFilter");
+                ApplyFilters();
+            }
+        }
+        public string CurrentWeatherTypeFilter
+        {
+            get { return _currentWeatherTypeFilter; }
+            set
+            {
+                _currentWeatherTypeFilter = value;
+                OnPropertyChanged("CurrentWeatherTypeFilter");
+                ApplyFilters();
+            }
+        }
         public MainWindow()
         {
             InitializeComponent();
@@ -200,29 +223,75 @@ namespace Pogoda
         private void FilterWeatherData(object parameter)
         {
             var filterOption = parameter as string;
-            switch (filterOption)
+
+            if (new[] { "положительная температура", "отрицательная температура", "нулевая температура", "все" }.Contains(filterOption))
             {
-                case "все":
-                    WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData);
-                    break;
-                case "положительная температура":
-                    WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData.Where(w => w.Temperature > 0));
-                    break;
-                case "отрицательная температура":
-                    WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData.Where(w => w.Temperature < 0));
-                    break;
-                case "нулевая температура":
-                    WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData.Where(w => w.Temperature == 0));
-                    break;
-                case "ясный":
-                case "дождливый":
-                case "туманный":
-                case "снежный":
-                    WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData.Where(w => w.WeatherType == filterOption));
-                    break;
+                CurrentTemperatureFilter = filterOption;
+            }
+            else if (new[] { "ясный", "дождливый", "туманный", "снежный", "все" }.Contains(filterOption))
+            {
+                CurrentWeatherTypeFilter = filterOption;
+            }
+
+            if (filterOption == "все")
+            {
+                // Reset both filters when "все" is selected
+                CurrentTemperatureFilter = "все";
+                CurrentWeatherTypeFilter = "все";
+                WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData);
+            }
+            else
+            {
+                ApplyFilters();
             }
         }
 
+
+        private void ApplyFilters()
+        {
+            IEnumerable<WeatherInfo> filteredData = _originalWeatherData;
+
+            // Apply temperature filter
+            switch (CurrentTemperatureFilter)
+            {
+                case "положительная температура":
+                    filteredData = filteredData.Where(w => w.Temperature > 0);
+                    break;
+                case "отрицательная температура":
+                    filteredData = filteredData.Where(w => w.Temperature < 0);
+                    break;
+                case "нулевая температура":
+                    filteredData = filteredData.Where(w => w.Temperature == 0);
+                    break;
+                case "все":
+                default:
+                    // No temperature filter
+                    break;
+            }
+
+            // Apply weather type filter
+            switch (CurrentWeatherTypeFilter)
+            {
+                case "ясный":
+                    filteredData = filteredData.Where(w => w.WeatherType == "Ясный");
+                    break;
+                case "дождливый":
+                    filteredData = filteredData.Where(w => w.WeatherType == "Дождливый");
+                    break;
+                case "туманный":
+                    filteredData = filteredData.Where(w => w.WeatherType == "Туманный");
+                    break;
+                case "снежный":
+                    filteredData = filteredData.Where(w => w.WeatherType == "Снежный");
+                    break;
+                case "все":
+                default:
+                    // No weather type filter
+                    break;
+            }
+
+            WeatherData = new ObservableCollection<WeatherInfo>(filteredData);
+        }
 
         private void UpdateStatistics()
         {
@@ -294,7 +363,7 @@ namespace Pogoda
     {
         public int Day { get; set; }
         public int Temperature { get; set; }
-        public string WeatherType { get; set; } 
+        public string WeatherType { get; set; }
     }
 
 
@@ -318,4 +387,3 @@ namespace Pogoda
         }
     }
 }
-
