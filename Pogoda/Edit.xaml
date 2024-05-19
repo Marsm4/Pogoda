@@ -1,0 +1,37 @@
+﻿<Window x:Class="Pogoda.Edit"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Edit" Height="200" Width="300">
+	<Grid Margin="10">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<TextBlock Text="День:" VerticalAlignment="Center"/>
+		<TextBox x:Name="DayTextBox" Grid.Row="0" Grid.Column="1" Margin="5" VerticalAlignment="Center" IsReadOnly="True"/>
+
+		<TextBlock Text="Teмпература:" VerticalAlignment="Top" Margin="0,7,0,0" Grid.Row="1"/>
+		<TextBox x:Name="TemperatureTextBox" Grid.Row="1" Grid.Column="1" Margin="5" VerticalAlignment="Center"/>
+
+		<TextBlock Text="Тип погоды:" VerticalAlignment="Top" Margin="0,10,0,0" Grid.Row="2"/>
+		<ComboBox x:Name="WeatherTypeComboBox" Grid.Row="2" Grid.Column="1" Margin="5" VerticalAlignment="Center">
+			<ComboBoxItem>Ясный</ComboBoxItem>
+			<ComboBoxItem>Дождливый</ComboBoxItem>
+			<ComboBoxItem>Туманный</ComboBoxItem>
+			<ComboBoxItem>Снежный</ComboBoxItem>
+		</ComboBox>
+
+		<StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+			<Button Content="Сохранить" Click="SaveButton_Click" Margin="5"/>
+			<Button Content="Отменить" Click="CancelButton_Click" Margin="5"/>
+		</StackPanel>
+	</Grid>
+</Window>

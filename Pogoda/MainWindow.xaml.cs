@@ -116,6 +116,7 @@ namespace Pogoda
             }
         }
         public ICommand DeleteCommand { get; }
+        public ICommand EditCommand { get; }
 
         public MainWindow()
         {
@@ -143,6 +144,7 @@ namespace Pogoda
 
             SaveCommand = new RelayCommand(SaveWeatherData);
             DeleteCommand = new RelayCommand(DeleteWeatherInfo);
+            EditCommand = new RelayCommand(EditWeatherInfo);
         }
         private void DeleteWeatherInfo(object parameter)
         {
@@ -150,6 +152,20 @@ namespace Pogoda
             {
                 WeatherInfo selectedWeatherInfo = (WeatherInfo)WeatherListView.SelectedItem;
                 _originalWeatherData.Remove(selectedWeatherInfo);
+                WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData);
+            }
+        }
+        private void EditWeatherInfo(object parameter)
+        {
+            if (WeatherListView.SelectedItem != null)
+            {
+                WeatherInfo selectedWeatherInfo = (WeatherInfo)parameter;
+
+                // Open the edit window
+                Edit editWindow = new Edit(selectedWeatherInfo, WeatherTypes);
+                editWindow.ShowDialog();
+
+                // Refresh data after editing
                 WeatherData = new ObservableCollection<WeatherInfo>(_originalWeatherData);
             }
         }
